@@ -19,6 +19,19 @@ describe('decorators/computed', function() {
     expect(obj.x).to.be.equal(1);
   });
 
+  it('should make property enumerable to false', function() {
+    class C {
+      @computed()
+      get x() {
+        return 2;
+      }
+
+      f() {}
+    }
+
+    expect(Object.keys(new C())).to.not.include('x');
+  });
+
   it('should return another property value', function() {
     class C {
       constructor() {
