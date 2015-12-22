@@ -3,7 +3,7 @@ import oneWay from '../../lib/decorators/one-way';
 // import computed from '../../lib/decorators/computed';
 
 
-describe('decorators/computed', function() {
+describe('decorators/oneWay', function() {
   it('should a function', function() {
     assert.isFunction(oneWay)
   });
