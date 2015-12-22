@@ -1,10 +1,10 @@
-import { expect } from 'chai';
+import { assert } from 'chai';
 import computed from '../../lib/decorators/computed';
 
 
 describe('decorators/computed', function() {
   it('should a function', function() {
-    expect(computed).to.be.a('function');
+    assert.isFunction(computed)
   });
 
   it('should return getter return value', function() {
@@ -16,7 +16,7 @@ describe('decorators/computed', function() {
     }
     const obj = new C();
 
-    expect(obj.x).to.be.equal(1);
+    assert.strictEqual(obj.x, 1);
   });
 
   it('should make property enumerable to false', function() {
@@ -25,11 +25,13 @@ describe('decorators/computed', function() {
       get x() {
         return 2;
       }
-
-      f() {}
     }
 
-    expect(Object.keys(new C())).to.not.include('x');
+    const c = new C();
+    const keys = Object.keys(c);
+
+    assert.notInclude(keys, 'x' , '`x` in not enumerable');
+    assert.equal(keys.length, 0, 'keys size is 0')
   });
 
   it('should return another property value', function() {
@@ -45,7 +47,7 @@ describe('decorators/computed', function() {
     }
     const obj = new C();
 
-    expect(obj.y).to.be.equal(1);
+    assert.strictEqual(obj.x, 1)
   });
 
   describe('cache', function() {
@@ -59,12 +61,12 @@ describe('decorators/computed', function() {
       const obj = new C();
       const a = obj.x;
 
-      expect(a).to.be.a('number');
+      assert.isNumber(a);
 
       const b = obj.x;
 
-      expect(b).to.be.a('number');
-      expect(a).to.equal(b);
+      assert.isNumber(b);
+      assert.strictEqual(a, b);
     });
 
     it('should return cache value if listened property did not changed', function() {
@@ -81,13 +83,13 @@ describe('decorators/computed', function() {
       const obj = new C();
       const a = obj.x;
 
-      expect(a).to.be.a('number');
-      expect(a).to.equal(obj.now * -1);
+      assert.isNumber(a);
+      assert.equal(a, obj.now * -1);
 
       const b = obj.x;
 
-      expect(b).to.be.a('number');
-      expect(b).to.equal(a);
+      assert.isNumber(b);
+      assert.equal(a, b);
     });
 
     it('should return new value if listened property changed', function() {
@@ -104,15 +106,15 @@ describe('decorators/computed', function() {
       const obj = new C();
       const a = obj.x;
 
-      expect(a).to.be.a('number');
-      expect(a).to.equal(obj.now * -1);
+      assert.isNumber(a);
+      assert.equal(a, obj.now * -1);
 
       obj.now = obj.now + 1;
 
       const b = obj.x;
 
-      expect(b).to.be.a('number');
-      expect(b).to.equal(obj.now * -1);
+      assert.isNumber(b);
+      assert.equal(b, (obj.now * -1));
     });
 
     it('should return new value if listened properties changed', function() {
@@ -131,15 +133,15 @@ describe('decorators/computed', function() {
       const a = obj.x;
       const expectedValue = obj.now + obj.nowPlusOne + 10;
 
-      expect(a).to.be.a('number');
-      expect(a).to.equal(expectedValue);
+      assert.isNumber(a);
+      assert.equal(a, expectedValue);
 
       obj.nowPlusOne += 100;
 
       const b = obj.x;
 
-      expect(b).to.be.a('number');
-      expect(b).to.equal(expectedValue + 100);
+      assert.isNumber(b);
+      assert.equal(b, expectedValue + 100);
     });
   });
 
@@ -148,10 +150,10 @@ describe('decorators/computed', function() {
       class C {
         @computed()
         get x() {
-          expect(arguments.length).to.equal(2);
+          assert.equal(arguments.length, 2);
 
           const lastValue = arguments[0];
-          expect(lastValue).to.be.an('undefined');
+          assert.isUndefined(lastValue);
 
           return 1;
         }
@@ -159,7 +161,7 @@ describe('decorators/computed', function() {
       const obj = new C();
       const a = obj.x;
 
-      expect(a).to.equal(1);
+      assert.equal(a, 1);
     });
 
     it('should receive parameter of lastValue of cache value', function() {
@@ -170,12 +172,12 @@ describe('decorators/computed', function() {
       class C {
         @computed('i')
         get x() {
-          expect(arguments.length).to.equal(2);
+          assert.equal(arguments.length, 2);
 
           counter++;
           if (counter === 2) {
             const lastValue = arguments[0];
-            expect(lastValue).to.equal(i1);
+            assert.equal(lastValue, i1);
           }
 
           return this.i;
@@ -185,14 +187,14 @@ describe('decorators/computed', function() {
 
       obj.i = i1;
       let res = obj.x;
-      expect(res).to.equal(i1);
+      assert.equal(res, i1);
 
       obj.i = i2;
       res = obj.x;
-      expect(res).to.equal(i2);
+      assert.equal(res, i2);
 
       // counter works
-      expect(counter).to.equal(2);
+      assert.equal(counter, 2);
     });
 
     it('should receive parameter of current key', function() {
@@ -201,7 +203,7 @@ describe('decorators/computed', function() {
       class C {
         @computed()
         get x() {
-          expect(arguments.length).to.equal(2);
+          assert(arguments.length, 2);
 
           key = arguments[1];
 
@@ -210,9 +212,9 @@ describe('decorators/computed', function() {
       }
       const obj = new C();
 
-      expect(key).to.be.an('undefined');
+      assert.isUndefined(key);
       obj.x;
-      expect(key).to.equal('x');
+      assert.equal(key, 'x');
     });
   });
 });

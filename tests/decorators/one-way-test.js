@@ -1,11 +1,11 @@
-import { expect } from 'chai';
+import { assert } from 'chai';
 import oneWay from '../../lib/decorators/one-way';
 // import computed from '../../lib/decorators/computed';
 
 
 describe('decorators/computed', function() {
   it('should a function', function() {
-    expect(oneWay).to.be.a('function');
+    assert.isFunction(oneWay)
   });
 
   it('should make property enumerable to false', function() {
@@ -14,9 +14,11 @@ describe('decorators/computed', function() {
       get x() {}
     }
 
-    expect(Object.keys(new C())).to.not.include('x');
-  });
+    const c = new C();
+    const cKeys = Object.keys(c);
 
+    assert.notInclude(cKeys, 'x');
+  });
 
   it('should throw if argument\'s length is less than one', function() {
     const f = () => {
@@ -27,7 +29,7 @@ describe('decorators/computed', function() {
       new C();
     };
 
-    expect(f).to.throw(Error, '@oneWay must have 1 argument only');
+    assert.throw(f, Error, '@oneWay must have 1 argument only');
   });
 
   it('should throw if argument\'s length is bigger than one', function() {
@@ -39,12 +41,14 @@ describe('decorators/computed', function() {
       new C();
     };
 
-    expect(f).to.throw(Error, '@oneWay must have 1 argument only');
+    assert.throws(f, Error, '@oneWay must have 1 argument only');
   });
 
   it('should return value of observed property', function() {
     class C {
-      y = 2;
+      constructor() {
+        this.y = 2;
+      }
 
       @oneWay('y')
       get x() {}
@@ -52,12 +56,14 @@ describe('decorators/computed', function() {
     const obj = new C();
     const { x } = obj;
 
-    expect(x).to.be.equal(2);
+    assert.equal(x, 2);
   });
 
   it('should override observer property with observed property when the latter set', function() {
     class C {
-      y = 2;
+      constructor() {
+        this.y = 2;
+      }
 
       @oneWay('y')
       get x() {}
@@ -67,11 +73,11 @@ describe('decorators/computed', function() {
     obj.x = 1;
     x = obj.x;
 
-    expect(x).to.be.equal(1);
-    expect(obj.y).to.be.equal(2);
+    assert.equal(x, 1);
+    assert.equal(obj.y, 2);
 
     obj.y = 3;
-    expect(obj.x).to.be.equal(3);
+    assert.equal(obj.x, 3);
   });
 
   it('should override observer property with observed property when the latter set when @oneWay decorate a function', function() {
@@ -86,11 +92,11 @@ describe('decorators/computed', function() {
     obj.x = 1;
     x = obj.x;
 
-    expect(x).to.be.equal(1);
-    expect(obj.y).to.be.equal(2);
+    assert.equal(x, 1);
+    assert.equal(obj.y, 2);
 
     obj.y = 3;
-    expect(obj.x).to.be.equal(3);
+    assert.equal(obj.x, 3);
   });
 
   it('should have correct event when listen to getter/setter property', function() {
@@ -104,10 +110,10 @@ describe('decorators/computed', function() {
     obj.x = 1;
     let x = obj.x;
 
-    expect(x).to.be.equal(1);
-    expect(obj.y).to.be.equal(2);
+    assert.equal(x, 1);
+    assert.equal(obj.y, 2);
 
     obj.y = 3;
-    expect(obj.x).to.be.equal(3);
+    assert.equal(obj.x, 3);
   });
 });
