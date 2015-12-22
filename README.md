@@ -10,10 +10,9 @@ import computed from 'computed';
 class Ygritte {
   name = 'Jon Snow';
 
-  @computed('name')
-  get talk() {
+  @computed('name', function() {
     return `You know nothing ${this.name}`;
-  }
+  }) talk
 }
 
 const ygritte = new Ygritte();
@@ -27,14 +26,14 @@ Because issues related to properties definition, to get `lastValue` you should h
 
 ```js
 class Class {
-  @computed()
-  get property() {
-    const [lastValue] = arguments;
+  @computed({
+    get() {
+      const [lastValue] = arguments;
 
-    ···
-  }
+      ···
+    }    
+  }) property
 }
 
 
 ```
-

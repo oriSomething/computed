@@ -3,16 +3,26 @@ import computed from '../../lib/decorators/computed';
 
 
 describe('decorators/computed', function() {
-  it('should a function', function() {
+  it('should a be function', function() {
     assert.isFunction(computed)
   });
 
-  it('should return getter return value', function() {
+  it('should return getter return a value for a function', function() {
     class C {
-      @computed()
-      get x() {
-        return 1;
-      }
+      @computed(() => 1) x
+    }
+    const obj = new C();
+
+    assert.strictEqual(obj.x, 1);
+  });
+
+  it('should return getter return a value for a getter in object', function() {
+    class C {
+      @computed({
+        get() {
+          return 1;
+        }
+      }) x
     }
     const obj = new C();
 
@@ -21,10 +31,7 @@ describe('decorators/computed', function() {
 
   it('should make property enumerable to false', function() {
     class C {
-      @computed()
-      get x() {
-        return 2;
-      }
+      @computed(() => 2) x
     }
 
     const c = new C();
@@ -40,10 +47,9 @@ describe('decorators/computed', function() {
         this.y = 1;
       }
 
-      @computed()
-      get x() {
+      @computed(function() {
         return this.y;
-      }
+      }) x
     }
     const obj = new C();
 
@@ -53,10 +59,9 @@ describe('decorators/computed', function() {
   describe('cache', function() {
     it('should return cache value if no property to listen had given', function() {
       class C {
-        @computed()
-        get x() {
+        @computed(function() {
           return Date.now();
-        }
+        }) x
       }
       const obj = new C();
       const a = obj.x;
@@ -75,10 +80,9 @@ describe('decorators/computed', function() {
           this.now = Date.now();
         }
 
-        @computed('now')
-        get x() {
+        @computed('now', function() {
           return this.now * -1;
-        }
+        }) x
       }
       const obj = new C();
       const a = obj.x;
@@ -98,10 +102,9 @@ describe('decorators/computed', function() {
           this.now = Date.now();
         }
 
-        @computed('now')
-        get x() {
+        @computed('now', function() {
           return this.now * -1;
-        }
+        }) x
       }
       const obj = new C();
       const a = obj.x;
@@ -124,10 +127,9 @@ describe('decorators/computed', function() {
           this.nowPlusOne = this.now;
         }
 
-        @computed('now', 'nowPlusOne')
-        get x() {
+        @computed('now', 'nowPlusOne', function() {
           return this.now + this.nowPlusOne + 10;
-        }
+        }) x
       }
       const obj = new C();
       const a = obj.x;
@@ -148,15 +150,14 @@ describe('decorators/computed', function() {
   describe('parameters', function() {
     it('should receive parameter of lastValue as undefined on first time', function() {
       class C {
-        @computed()
-        get x() {
+        @computed(function() {
           assert.equal(arguments.length, 2);
 
           const lastValue = arguments[0];
           assert.isUndefined(lastValue);
 
           return 1;
-        }
+        }) x
       }
       const obj = new C();
       const a = obj.x;
@@ -170,8 +171,7 @@ describe('decorators/computed', function() {
       let counter = 0;
 
       class C {
-        @computed('i')
-        get x() {
+        @computed('i', function() {
           assert.equal(arguments.length, 2);
 
           counter++;
@@ -181,7 +181,7 @@ describe('decorators/computed', function() {
           }
 
           return this.i;
-        }
+        }) x
       }
       const obj = new C();
 
@@ -201,14 +201,13 @@ describe('decorators/computed', function() {
       let key;
 
       class C {
-        @computed()
-        get x() {
+        @computed(function() {
           assert(arguments.length, 2);
 
           key = arguments[1];
 
           return 1;
-        }
+        }) x
       }
       const obj = new C();
 
