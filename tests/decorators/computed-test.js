@@ -158,12 +158,9 @@ describe('decorators/computed', function() {
   describe('parameters', function() {
     it('should receive parameter of lastValue as undefined on first time', function() {
       class C {
-        @computed(function() {
-          assert.equal(arguments.length, 2);
-
-          const lastValue = arguments[0];
+        @computed(function(lastValue) {
+          assert.lengthOf(arguments, 2);
           assert.isUndefined(lastValue);
-
           return 1;
         }) x
       }
@@ -179,12 +176,11 @@ describe('decorators/computed', function() {
       let counter = 0;
 
       class C {
-        @computed('i', function() {
-          assert.equal(arguments.length, 2);
+        @computed('i', function(lastValue) {
+          assert.lengthOf(arguments, 2);
 
           counter++;
           if (counter === 2) {
-            const lastValue = arguments[0];
             assert.equal(lastValue, i1);
           }
 
@@ -209,11 +205,9 @@ describe('decorators/computed', function() {
       let key;
 
       class C {
-        @computed(function() {
-          assert(arguments.length, 2);
-
-          key = arguments[1];
-
+        @computed(function(lastValue, propKey) {
+          assert.lengthOf(arguments, 2);
+          key = propKey;
           return 1;
         }) x
       }

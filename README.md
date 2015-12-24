@@ -22,14 +22,12 @@ ygritte.talk === 'You know nothing Jon Snow';
 ```
 
 
-Because issues related to properties definition, to get `lastValue` you should hack it like this:
+If you want the getter last value returned by the getter you have a `lastValue` param in `get`:
 
 ```js
 class Class {
   @computed({
-    get() {
-      const [lastValue] = arguments;
-
+    get(lastValue) {
       ···
     }    
   }) property
