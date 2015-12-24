@@ -11,9 +11,13 @@ describe('decorators/computed', function() {
     class C {
       @computed(() => 1) x
     }
-    const obj = new C();
 
-    assert.strictEqual(obj.x, 1);
+    const descriptor = Object.getOwnPropertyDescriptor(C.prototype, 'x');
+    assert.isUndefined(descriptor.set, "no setter in descriptor");
+    assert.isFunction(descriptor.get, "has getter");
+
+    const obj = new C();
+    assert.strictEqual(obj.x, 1, "the correct value is returned");
   });
 
   it('should return getter return a value for a getter in object', function() {
@@ -24,9 +28,13 @@ describe('decorators/computed', function() {
         }
       }) x
     }
-    const obj = new C();
 
-    assert.strictEqual(obj.x, 1);
+    const descriptor = Object.getOwnPropertyDescriptor(C.prototype, 'x');
+    assert.isUndefined(descriptor.set, "no setter in descriptor");
+    assert.isFunction(descriptor.get, "has getter");
+
+    const obj = new C();
+    assert.strictEqual(obj.x, 1, "the correct value is returned");
   });
 
   it('should make property enumerable to false', function() {
